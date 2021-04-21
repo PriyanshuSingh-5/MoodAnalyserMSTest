@@ -57,7 +57,7 @@ namespace MSTestMoodAnalyser
             }
         }
 
-        //UC3.2-Empty Mood
+        //UC3.2-Empty 
         [TestMethod]
         public void Given_Emptymood_Using_CustomException_Return_Empty()
         {
