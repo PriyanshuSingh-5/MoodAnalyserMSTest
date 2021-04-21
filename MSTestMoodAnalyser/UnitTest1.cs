@@ -22,12 +22,28 @@ namespace MSTestMoodAnalyser
             Assert.AreEqual(expected, actual);
         }
 
-        //UC2.1
+        //UC-2
         [TestMethod]
         public void Given_nullmood_Expecting_Exception_Result()
         {
             //Arrange
-            MoodToAnalyse mood = new MoodToAnalyse("happy");
+            MoodToAnalyse mood = new MoodToAnalyse(null);
+            string expected = "Object reference not set to an instance of an object";
+
+            //Act
+            string actual = mood.Analyser();
+
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+
+        //UC2.1
+        [TestMethod]
+        public void Given_nullmood_Expecting_happy_Result()
+        {
+            //Arrange
+            MoodToAnalyse mood = new MoodToAnalyse(null);
             string expected = "happy";
 
             //Act
