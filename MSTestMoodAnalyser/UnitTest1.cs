@@ -92,6 +92,17 @@ namespace MSTestMoodAnalyser
                 Assert.AreEqual(expected, exception.Message);
             }
         }
+        //UC4-reflection to create mood analyser
+        [TestMethod]
+        public void Given_MoodAnalyser_Using_Reflection_Return_defaultConstructor()
+        {
+            //Arrange
+            object expected = new MoodToAnalyse("NULL");
+            object obj = MoodAnalyserFactory.CreateMoodAnalyseMethod("MoodAnalyzer.MoodAnalyser", "MoodAnalyser");
+            expected.Equals(obj);
+
+
+        }
 
     }
 }
