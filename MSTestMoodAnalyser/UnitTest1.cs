@@ -93,16 +93,57 @@ namespace MSTestMoodAnalyser
             }
         }
         //UC4-reflection to create mood analyser
+
         [TestMethod]
-        public void Given_MoodAnalyser_Using_Reflection_Return_defaultConstructor()
+        public void Given_MoodAnalyser__Using_Reflection_ToReturn_defaultConstructor()
         {
-            //Arrange
-            object expected = new MoodToAnalyse("NULL");
-            object obj = MoodAnalyserFactory.CreateMoodAnalyseMethod("MoodAnalyzer.MoodAnalyser", "MoodAnalyser");
-            expected.Equals(obj);
+            string expected = "Constructor is not Found";
+            try
+            {
+                object obj = MoodAnalyserFactory.CreateMoodAnalyseMethod("MoodAnalyserProblem.MoodAnalyser", "MoodAnalyser");
+            }
+            catch (MoodAnalyserException ex)
+            {
+                Assert.AreEqual(expected, ex.Message);
+            }
 
 
         }
 
+        //UC5-reflection using parameter constructor
+        [TestMethod]
+        public void Given_MoodAnalyser__Using_Reflection_ToReturn_parameterConstructor()
+        {
+            //Arrange
+            object expected = new MoodToAnalyse("Happy");
+
+            //Act
+            object obj = MoodAnalyserFactory.CreateMoodAnalyseMethod("MoodAnalyser.MoodAnalyger", "MoodAnalyser");
+
+            //Assert
+            expected.Equals(obj);
+
+        }
     }
+    //UC6-InvokeMethod
+    [TestMethod]
+    public string InvokeAnalyserMethod(string message, string methodName)
+    {
+        try
+        {
+            Type type = typeof(MoodToAnalyse);
+            MethodInfo methodInfo = type.GetMethod(methodName);
+            MoodAnalyserFactory factory = new MoodAnalyserFactory();
+            object moodAnalyserObject = factory.CreateMoodAnalyseMethod("MoodAnalyser.MoodAnalyger", "MoodAnalyser", message);
+            object info = methodInfo.Invoke(moodAnalyserObject, null);
+            return info.ToString();
+
+        }
+        catch (NullReferenceException)
+        {
+            throw new MoodAnalyserException(MoodAnalyserException.ExceptionType.NO_SUCH_METHOD, "no such method found");
+        }
+    }
+}
+
 }
