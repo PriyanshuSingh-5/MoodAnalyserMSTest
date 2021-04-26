@@ -112,38 +112,41 @@ namespace MSTestMoodAnalyser
 
         //UC5-reflection using parameter constructor
         [TestMethod]
-        public void Given_MoodAnalyser__Using_Reflection_ToReturn_parameterConstructor()
+        public static object CreatedMoodAnalyserUsingParameterizedConstructor(string className, string constructorName, string message1)
         {
-            //Arrange
-            object expected = new MoodToAnalyse("Happy");
-
-            //Act
-            object obj = MoodAnalyserFactory.CreateMoodAnalyseMethod("MoodAnalyser.MoodAnalyger", "MoodAnalyser");
-
-            //Assert
-            expected.Equals(obj);
-
+            Type type = typeof(MoodToAnalyse);
+            if (type.Name.Equals(className) || type.FullName.Equals(className))
+            {
+                if (type.Name.Equals(constructorName))
+                {
+                    ConstructorInfo constructorInfo = type.GetConstructor(new[] { typeof(string) });
+                    object instance = constructorInfo.Invoke(new object[] { message1 });
+                    return instance;
+                }
+                else
+                {
+                    throw new MoodAnalyserException(MoodAnalyserException.ExceptionType.NO_SUCH_METHOD, "Constructor is not found");
+                }
+            }
+            else
+            {
+                throw new MoodAnalyserException(MoodAnalyserException.ExceptionType.NO_SUCH_CLASS, "Class not found");
+            }
         }
     }
     //UC6-InvokeMethod
     [TestMethod]
-    public string InvokeAnalyserMethod(string message, string methodName)
+    public static void Given_To_Invoke_method()
     {
+        string expected = "Constructor is not found";
         try
         {
-            Type type = typeof(MoodToAnalyse);
-            MethodInfo methodInfo = type.GetMethod(methodName);
-            MoodAnalyserFactory factory = new MoodAnalyserFactory();
-            object moodAnalyserObject = factory.CreateMoodAnalyseMethod("MoodAnalyser.MoodAnalyger", "MoodAnalyser", message);
-            object info = methodInfo.Invoke(moodAnalyserObject, null);
-            return info.ToString();
-
+            object obj = MoodAnalyserFactory.CreateMoodAnalyseMethod("MoodAnalyzer.MoodAnalyser", "sampleClass", "HAPPY");
         }
-        catch (NullReferenceException)
+        catch (MoodAnalyserException e)
         {
-            throw new MoodAnalyserException(MoodAnalyserException.ExceptionType.NO_SUCH_METHOD, "no such method found");
+            Assert.AreEqual(expected, e.Message);
         }
     }
 }
 
-}
